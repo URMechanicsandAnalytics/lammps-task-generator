@@ -1,0 +1,39 @@
+# Set up the various task configurations here.
+
+# specify the directory where the input files can be found
+sim_setup: 
+
+  # the directory where the input files can be found. 
+  # -> works best if it's an absolute directory
+  source_directory : /
+
+  # the LAMMPS input script for modifications
+  # All of the LAMMPS files listed below must be found in the `source_directory` above
+  lammps_input: in.impact_Moon_1x_parent
+
+  # the extra files that the LAMMPS input script will look for
+  lammps_dependencies:
+    - restart.settle_Moon_1x
+    - discCoords1x.data
+  
+  # the files --> This is independent of the configurations above!!
+  modify :
+
+    # output identifiers (jobID)
+    environment : Moon
+    identifier : 1x
+
+    # LAMMPS variable values to modify
+    angles : [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    velocities : [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+
+# output behavior
+output_behavior :
+
+  # single or split
+  directories : split
+    
+  # number of output files adjusted for parallel jobs
+  parallel : 1
+
+  progress_tracking : true

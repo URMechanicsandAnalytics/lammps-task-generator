@@ -1,0 +1,9 @@
+# dirs
+src/__pycache__/
+
+#pyc
+*.pyc
+
+#output files
+task_*/
+*.sbatch
