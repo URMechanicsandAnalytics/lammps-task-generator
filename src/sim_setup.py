@@ -1,4 +1,3 @@
-import os
 from simspace_generator import Writer
 
 def main():
