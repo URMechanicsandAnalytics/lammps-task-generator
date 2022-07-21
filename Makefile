@@ -27,10 +27,10 @@ all:
 	./RUN.sh
 
 clean: 
-	rm -rf __pycache__
+	rm -rf src/__pycache__
 	rm -rf $(VENV)
 
 reset:
-	rm -rf __pycache__
+	rm -rf src/__pycache__
 	rm -rf $(VENV)
 	./RESET.sh

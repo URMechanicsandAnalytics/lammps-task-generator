@@ -3,6 +3,23 @@
 # specify the directory where the input files can be found
 sim_setup: 
 
+  # the files --> This is independent of the configurations above!!
+  modify :
+
+    # output identifiers (jobID)
+    environment : Moon
+    identifier : 1x
+
+    # LAMMPS variable values to modify
+    angles : [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+    velocities : [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+
+    # set to true if the velocities above will be converted for the appropriate environment
+    convert_to_environment : true
+
+    # if the `convert_to_environment` is set to `false`, then this field will be ignored
+    gravity : 9.81 #m s^-2
+
   # the directory where the input files can be found. 
   # -> works best if it's an absolute directory
   source_directory : /
@@ -16,24 +33,14 @@ sim_setup:
     - restart.settle_Moon_1x
     - discCoords1x.data
   
-  # the files --> This is independent of the configurations above!!
-  modify :
-
-    # output identifiers (jobID)
-    environment : Moon
-    identifier : 1x
-
-    # LAMMPS variable values to modify
-    angles : [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
-    velocities : [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
-
+  
 # output behavior
 output_behavior :
 
   # single or split
-  directories : split
+  directories : single
     
   # number of output files adjusted for parallel jobs
-  parallel : 1
+  parallel : 4
 
   progress_tracking : true

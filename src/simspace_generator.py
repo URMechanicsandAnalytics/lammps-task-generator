@@ -11,16 +11,20 @@ class Writer:
     
     project_root = Path(os.getcwd()).parent.absolute()
         
-    def __init__(self, config_file) -> None:
+    def __init__(self, config_file, convert_func) -> None:
 
         self.setup_paramfile = f"{self.project_root}/{config_file}"
+
+        # a function to convert the input velocities according to the environment
+        self.__convert_vel = convert_func
 
         # fetching the simulation environment parameter settings
         if os.path.exists(self.setup_paramfile):
             with open(self.setup_paramfile, 'r') as file:
                 params = yaml.safe_load(file)
         else:
-            raise FileNotFoundError(f"{self.setup_paramfile} was not found. Check to see that it is located correctly or if its name has not changed.")
+            raise FileNotFoundError(f"\"{self.setup_paramfile}\" was not found. Check to see that it is " \
+                    "located correctly or if its name has not changed.")
         
         # setting the input parameters
         self.setup_params = params
@@ -36,7 +40,7 @@ class Writer:
         # setting and checking source directory
         source_dir = self.setup_params["sim_setup"]["source_directory"]
         if not os.path.exists(source_dir):
-            raise FileNotFoundError(f"The input source directory {source_dir} was not found.")
+            raise FileNotFoundError(f"The input source directory \"{source_dir}\" was not found.")
 
         necessary_files = [ self.setup_params["sim_setup"]["lammps_input"], *self.setup_params["sim_setup"]["lammps_dependencies"] ]
 
@@ -59,22 +63,12 @@ class Writer:
                 # raise FileNotFoundError
             else:
                 pass
-
-
         
-        # sim_environment_files = os.listdir(f"{self.project_root}/sim_environment/{sim_environment}")
-        # if not sim_environment_files:
-        #     raise FileNotFoundError(f"The necessary input files were not found in {self.project_root}/sim_environment/{sim_environment}!")
-        
-        # for env_file in sim_environment_files:
-        #     if sim_environment not in env_file:
-        #         raise FileNotFoundError(f"The relevant {sim_environment} file was not found!")
 
         for target_file in necessary_files:
             if target_file not in os.listdir(source_dir):
                 raise FileNotFoundError(f"At least one of the necessary input files " \
-                        f"({target_file}) is missing from {source_dir}!")
-
+                        f"({target_file}) is missing from \"{source_dir}\"!")
         
         return
 
@@ -89,9 +83,9 @@ class Writer:
             input_lines = _Lines(file.readlines())
             oldLines = input_lines.get_lines()
             
-            # setting up the job id
+            # setting up the job id --> the velocity format is changed here!!!!
             jobID = f"{self.setup_params['sim_setup']['modify']['environment']}_" \
-                f"{self.setup_params['sim_setup']['modify']['identifier']}_V{velocity}_A{angle}"
+                    f"{self.setup_params['sim_setup']['modify']['identifier']}_V{velocity:3.1f}_A{angle}"
 
             # Getting the lines and the line numbers for the values to change
             ang_line, ang_idx = input_lines.get_value("angle", angle)
@@ -199,6 +193,7 @@ class Writer:
                 print(f"Successfully created {filename}_{key+1}.sbatch!")
 
 
+
     def writer(self, **kwargs):
         """
         Method to write out the necessary input files for the task
@@ -224,8 +219,13 @@ class Writer:
         dir_behavior, parallel, progress_tracking =  ( 
                 i for i in [value for value in self.setup_params["output_behavior"].values()] )
 
-        environment,identifier,angles,velocities = (
+        (environment,identifier,angles,velocities, 
+            convert, gravity) = (
                 i for i in [value for value in self.setup_params["sim_setup"]["modify"].values()] )   
+
+        # to convert velocities according to the environment
+        if convert:
+            velocities = [ self.__convert_vel(vel,gravity) for vel in velocities  ]
         
         # separating out the input file and the restart file
         # input_file = f"{self.project_root}/sim_environment/{environment}/in.impact_{jobID}_parent"
@@ -241,10 +241,14 @@ class Writer:
                 
                 inputFile_lines = self.__make_inputFile(angle, velocity, input_file)
                 # discFile_lines = self.__make_discFile()
+                
+                # velocity identifier to easily identify files
+                #! this is only consistent for single digit numbers!!
+                vel_id = f"{velocity:3.1f}"
 
                 # splitting directories into angles if prompted to do so
                 if dir_behavior == "split":
-                    file_destination = f"{self.project_root}/task_{environment}_{identifier}_A{angle}/iteration_V{velocity}_A{angle}"
+                    file_destination = f"{self.project_root}/task_{environment}_{identifier}_A{angle}/iteration_V{vel_id}_A{angle}"
                 elif dir_behavior == "single":
                     file_destination = f"{self.project_root}/task_{environment}_{identifier}"
                 else:
@@ -255,7 +259,7 @@ class Writer:
                 Path(file_destination).mkdir(parents=True, exist_ok=True)
                 
                 # creating the input file
-                inputFile_name = f"in.impact_{environment}_{identifier}_V{velocity}_A{angle}" 
+                inputFile_name = f"in.impact_{environment}_{identifier}_V{vel_id}_A{angle}" 
 
                 inputFile_list.append( (file_destination, inputFile_name) )
                 with open(f"{file_destination}/{inputFile_name}", 'w') as f:

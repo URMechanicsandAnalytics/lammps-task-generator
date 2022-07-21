@@ -1,9 +1,12 @@
 # dirs
 src/__pycache__/
 
-#pyc
+# pyc
 *.pyc
 
-#output files
+# output files
 task_*/
 *.sbatch
+
+# config files
+Task_setup.yaml
