@@ -43,12 +43,8 @@ def convert_vel(
     return converted_velocity
 
 def main():
-    print("Hi")
-    let = 0
-    for i in range(5):
-        let += 1
-
     Writer("Task_setup.yaml", convert_vel).writer()
+
 
 if __name__ == "__main__":
     main()
