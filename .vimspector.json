@@ -1,0 +1,14 @@
+{
+    "configurations": {
+        "Launch": {
+            "adapter": "debugpy",
+            "configuration": {
+                "request": "launch",
+                "program": "src/sim_setup.py",
+                "cwd": "/home/moosung/projects/Research/Granular/lammps-task-generator",
+                "externalConsole": true,
+                "MIMode": "pdb"
+            }
+        }
+    }
+}

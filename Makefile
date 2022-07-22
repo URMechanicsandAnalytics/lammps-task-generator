@@ -1,5 +1,4 @@
-# .PHONY: run clean
-.PHONY: all clean
+.PHONY: all clean reset
 
 VENV = venv
 PYTHON = $(VENV)/bin/python3

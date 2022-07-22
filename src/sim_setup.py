@@ -16,10 +16,10 @@ the appropriate environment.
 
 ## Units must be CONSISTENT!!
 """
-def convert_vel( 
+def convert_vel(
 
     # add arguments here as necesary
-        
+
     #   Format:
     #   [input_name]: [input_type]
     #   Example:
@@ -43,6 +43,11 @@ def convert_vel(
     return converted_velocity
 
 def main():
+    print("Hi")
+    let = 0
+    for i in range(5):
+        let += 1
+
     Writer("Task_setup.yaml", convert_vel).writer()
 
 if __name__ == "__main__":
