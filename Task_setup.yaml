@@ -22,7 +22,7 @@ sim_setup:
 
   # the directory where the input files can be found. 
   # -> works best if it's an absolute directory
-  source_directory : /
+  source_directory : /home/mlee80/projects/sim_environment/Moon
 
   # the LAMMPS input script for modifications
   # All of the LAMMPS files listed below must be found in the `source_directory` above
