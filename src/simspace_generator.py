@@ -38,7 +38,8 @@ class Writer:
         """
 
         # setting and checking source directory
-        source_dir = self.setup_params["sim_setup"]["source_directory"]
+        # source_dir = self.setup_params["sim_setup"]["source_directory"]
+        source_dir = f"{self.project_root}/sim_environment/{self.setup_params['sim_setup']['modify']['environment']}"
         if not os.path.exists(source_dir):
             raise FileNotFoundError(f"The input source directory \"{source_dir}\" was not found.")
 
@@ -228,8 +229,8 @@ class Writer:
             velocities = [ self.__convert_vel(vel,gravity) for vel in velocities  ]
         
         # separating out the input file and the restart file
-        # input_file = f"{self.project_root}/sim_environment/{environment}/in.impact_{jobID}_parent"
-        source_dir = self.setup_params["sim_setup"]["source_directory"]
+        # source_dir = self.setup_params["sim_setup"]["source_directory"]
+        source_dir = f"{self.project_root}/sim_environment/{self.setup_params['sim_setup']['modify']['environment']}"
         input_file = f"{source_dir}/{self.setup_params['sim_setup']['lammps_input']}"
         dependencies = [ dep_file for dep_file in self.setup_params["sim_setup"]["lammps_dependencies"] ]
         
