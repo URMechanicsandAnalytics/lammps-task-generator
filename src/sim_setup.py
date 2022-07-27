@@ -36,9 +36,12 @@ def convert_vel(
             - ln B --> math.log(math.e,B)
     """
 
+    radius = 0.08075
     # Function operations start here
     # converted_velocity = velocity * (gravity/gravity) * 0.5
-    converted_velocity = math.sqrt(velocity) *(gravity/gravity)
+    Fr = velocity/( math.sqrt(9.81*radius) )
+    
+    converted_velocity = Fr*math.sqrt( gravity*radius )
 
     return converted_velocity
 

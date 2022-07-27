@@ -18,11 +18,11 @@ sim_setup:
     convert_to_environment : true
 
     # if the `convert_to_environment` is set to `false`, then this field will be ignored
-    gravity : 9.81 #m s^-2
+    gravity : 4.9 #m s^-2
 
   # the directory where the input files can be found. 
   # -> works best if it's an absolute directory
-  source_directory : /
+  source_directory : /run/media/moosung/9C33-6BBD/Shared/Research/Granular/data/sim_environment/Moon
 
   # the LAMMPS input script for modifications
   # All of the LAMMPS files listed below must be found in the `source_directory` above
