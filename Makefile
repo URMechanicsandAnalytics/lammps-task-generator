@@ -25,7 +25,6 @@ all:
 	@source $(VENV)/bin/activate
 	@$(PIP) install -r requirements.txt
 	@./RUN.sh
-	@source ./submit.sh
 
 clean: 
 	@echo Deleting the virtual environment...
