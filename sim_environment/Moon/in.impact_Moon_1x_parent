@@ -1,0 +1,97 @@
+
+#########################################################################
+# INITIALIZATION
+
+
+
+##### MODIFY BELOW
+variable		JOBID string impact_Moon_1x_Vyy_Azz
+variable		impVelocity equal yy
+variable		impAngle equal zz
+
+
+
+
+# general variables
+variable 		settleStepJOB string settle_Moon_1x
+variable		gmag equal 1.625
+
+# impact launch variables (to be set automatically by MATLAB script)
+variable		impAngleRad equal ${impAngle}*(PI/180)
+
+variable 		xvel equal abs(${impVelocity}*cos(${impAngleRad}))
+variable 		yvel equal -1*abs(${impVelocity}*sin(${impAngleRad}))
+
+# sim space dimensions (be sure to match with data file)
+variable		xdim equal	0.321
+variable		ydim equal	1.68
+
+variable		grnRad equal 0.001197
+variable 		discRad equal 0.008075
+
+# simulation operational variables
+variable		skin equal 2.0*${grnRad}
+
+variable		tstep equal 0.0000005
+variable 		tMove equal 0.5
+variable		noStpMove equal ${tMove}/${tstep}
+
+variable		saveFreq equal 1000
+
+# pair coeff material properties for grains
+variable		youngs equal 64e9
+variable 		damping equal 0.66
+variable 		poissons equal 0.2
+variable		mus equal 0.84
+
+
+#########################################################################
+# SYSTEM DEFINITION
+
+
+read_restart 	restart.${settleStepJOB}
+
+# introduce disc impactor
+#boundary        p f f
+
+read_data		discCoords1x.data add append
+
+variable		grainCnt equal 100000+count(grains)
+group			disc id ${grainCnt}
+
+neighbor		${skin} bin
+
+pair_style 		granular
+pair_coeff 		* * hertz/material ${youngs} ${damping} ${poissons} tangential linear_nohistory 1.0 ${mus} damping tsuji
+
+fix         	1 all nve/sphere
+fix				2 all gravity ${gmag} vector 0 -1 0
+
+region  		mybox block 0 ${xdim} 0 ${ydim} -0.003 0.003 side in open 1 open 2
+
+fix 			yplns grains wall/gran/region granular hertz/material ${youngs} ${damping} ${poissons} tangential linear_nohistory 1.0 ${mus} damping tsuji region mybox
+#fix 			yplns disc wall/gran/region granular hertz/material ${youngs} ${damping} ${poissons} tangential linear_nohistory 1.0 ${mus} damping tsuji region mybox
+
+fix				noz all recenter NULL NULL 0
+
+
+#########################################################################
+# STEP 2: IMPACT!
+
+compute         1 all temp
+compute_modify  1 dynamic/dof yes
+
+compute         2 all temp/sphere
+compute_modify  2 dynamic/dof yes
+
+thermo			1000
+thermo_style	custom step atoms temp c_1 c_2 press
+thermo_modify   lost warn
+compute_modify  thermo_temp dynamic/dof yes
+
+velocity		disc set ${xvel} ${yvel} 0
+
+dump 			regDump all custom ${saveFreq} dmp.reg.${JOBID} id type xs ys zs radius
+dump 			discDump disc custom ${saveFreq} dmp.disc.${JOBID} mass xs ys zs radius vx vy
+
+run				${noStpMove}
