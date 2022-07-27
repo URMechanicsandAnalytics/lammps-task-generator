@@ -86,7 +86,7 @@ class Writer:
             
             # setting up the job id --> the velocity format is changed here!!!!
             jobID = f"{self.setup_params['sim_setup']['modify']['environment']}_" \
-                    f"{self.setup_params['sim_setup']['modify']['identifier']}_V{velocity:3.5f}_A{angle}"
+                    f"{self.setup_params['sim_setup']['modify']['identifier']}_V{velocity:.5f}_A{angle}"
 
             # Getting the lines and the line numbers for the values to change
             ang_line, ang_idx = input_lines.get_value("angle", angle)
@@ -245,7 +245,7 @@ class Writer:
                 
                 # velocity identifier to easily identify files
                 #! this is only consistent for single digit numbers!!
-                vel_id = f"{velocity*100:3.5f}"
+                vel_id = f"{velocity:.5f}"
 
                 # splitting directories into angles if prompted to do so
                 if dir_behavior == "split":
