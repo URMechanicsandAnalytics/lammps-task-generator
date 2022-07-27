@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source ./submit.sh
 cd ./src/
 
 # this is specifically for bluehive
