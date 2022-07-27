@@ -245,7 +245,7 @@ class Writer:
                 
                 # velocity identifier to easily identify files
                 #! this is only consistent for single digit numbers!!
-                vel_id = f"{velocity*100:3.1f}"
+                vel_id = f"{velocity*100:3.3f}"
 
                 # splitting directories into angles if prompted to do so
                 if dir_behavior == "split":
