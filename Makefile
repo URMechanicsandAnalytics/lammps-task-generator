@@ -18,7 +18,7 @@ SHELL = /bin/bash
 all:
 	@chmod u+x ./RUN.sh
 	@chmod u+x ./RESET.sh
-	@chmod u+x ./submit.sh
+	@chmod u+x ./submit
 	@. /etc/profile.d/modules.sh; \
 	module load python3/3.10.5b; \
 	python3 -m venv $(VENV)
