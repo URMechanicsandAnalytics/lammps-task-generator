@@ -7,7 +7,7 @@ sim_setup:
   modify :
 
     # output identifiers (jobID)
-    environment : Moon
+    environment : Bennu
     identifier : 1x
 
     # LAMMPS variable values to modify
@@ -18,16 +18,16 @@ sim_setup:
     convert_to_environment : true
 
     # if the `convert_to_environment` is set to `false`, then this field will be ignored
-    gravity : 4.9 #m s^-2
+    gravity : 0.0000627 #m s^-2
 
 
   # the LAMMPS input script for modifications
   # All of the LAMMPS files listed below must be found in the `source_directory` above
-  lammps_input: in.impact_Moon_1x_parent
+  lammps_input: in.impact_Bennu_1x_parent
 
   # the extra files that the LAMMPS input script will look for
   lammps_dependencies:
-    - restart.settle_Moon_1x
+    - restart.settle_Bennu_1x
     - discCoords1x.data
   
   
