@@ -1,5 +1,4 @@
 import math
-from simspace_generator import Writer
 
 """
 Function `convert_vel()` to convert an input velocity to
@@ -16,6 +15,9 @@ the appropriate environment.
 
 ## Units must be CONSISTENT!!
 """
+
+config_file = "Task_setup.yaml"
+
 def convert_vel(
 
     # add arguments here as necesary
@@ -46,7 +48,8 @@ def convert_vel(
     return converted_velocity
 
 def main():
-    Writer("Task_setup.yaml", convert_vel).writer()
+    from simspace_generator import Writer
+    Writer(config_file, convert_vel).writer()
 
 
 if __name__ == "__main__":

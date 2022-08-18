@@ -1,0 +1,73 @@
+#!./venv/bin/python3
+
+import os
+import sys
+import yaml
+import src.sim_setup
+
+def get_dir_name() -> str:
+    with open( src.sim_setup.config_file,'r' ) as file:
+            configs = yaml.safe_load(file)
+
+    # task_{environment}_{identifier}
+    modify = configs['sim_setup']['modify']
+    return f"task_{modify['environment']}_{modify['identifier']}"
+
+
+def default() -> None:
+    os.system(
+        f"tar -cvf ./{get_dir_name()}.tar.gz ./{get_dir_name()}/" 
+    )
+
+def exclude_input() -> None:
+    os.system(
+        f"tar -cvf ./{get_dir_name()}.tar.gz ./{get_dir_name()}/" \
+        f"--exclude=./{get_dir_name()}/in.*"
+    )
+
+
+def show_help() -> None:
+    print(
+        """
+        `compress` : a Python script to compress the LAMMPS output data into a `task_*_*.tar.gz` archive.
+
+            - Dependencies : 
+                - the Python virtual environment must have been activated either by the \
+Makefile or the `venv/bin/activate` command
+
+            - Flags : 
+                - `--all` or `-a` or no flags : 
+                    This results in compressing all the files in the `task_*_*` directory.
+                - `--only-output` or `-o` :
+                    This results in compressing all the files in the `task_*_*` directory \
+output by LAMMPS.
+        """
+    )
+
+
+def throw_error() -> None:
+    print(
+        f"\"{' '.join(sys.argv[1:])}\" is an invalid argument." \
+        " Run \"./compress --help\" or \"./compress -h\" to see valid options"
+    )
+
+
+def main() -> None:
+    try: 
+        flag = sys.argv[1]
+    except IndexError:
+        default()
+        exit()
+
+    if flag in ["--all","-a"]:
+        default()
+    elif flag in ["--only-output","-o"]:
+        exclude_input()
+    elif flag in ["--help","-h"]:
+        show_help()
+    else:
+        throw_error()
+
+if __name__ == "__main__":
+    main()
+

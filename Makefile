@@ -16,15 +16,16 @@ SHELL = /bin/bash
 
 .ONESHELL:
 all:
-	@chmod u+x ./RUN.sh
-	@chmod u+x ./RESET.sh
+	@chmod u+x ./bin/RUN.sh
+	@chmod u+x ./bin/RESET.sh
 	@chmod u+x ./submit
+	@chmod u+x ./compress
 	@. /etc/profile.d/modules.sh; \
 	module load python3/3.10.5b; \
 	python3 -m venv $(VENV)
 	@source $(VENV)/bin/activate
-	@$(PIP) install -r requirements.txt
-	@./RUN.sh
+	@$(PIP) install -r ./src/requirements.txt
+	@./bin/RUN.sh
 
 clean: 
 	@echo Deleting the virtual environment...
@@ -33,6 +34,8 @@ clean:
 
 reset:
 	@echo Resetting the directory...
+	@chmod u-x compress
+	@chmod u-x submit
 	@rm -rf src/__pycache__
 	@rm -rf $(VENV)
-	@./RESET.sh
+	@./bin/RESET.sh
