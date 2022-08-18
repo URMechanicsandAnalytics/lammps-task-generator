@@ -1,23 +1,19 @@
-#!./venv/bin/python3
+#!/usr/bin/python3
 
 import os
 import sys
-import yaml
-import src.sim_setup
+import subprocess
 
 def get_dir_name() -> str:
-    with open( src.sim_setup.config_file,'r' ) as file:
-            configs = yaml.safe_load(file)
-
-    # task_{environment}_{identifier}
-    modify = configs['sim_setup']['modify']
-    return f"task_{modify['environment']}_{modify['identifier']}"
+    result = subprocess.run(["ls | grep -e \"task_*_*\""],shell=True,stdout=subprocess.PIPE)
+    return result.stdout.decode("utf-8").split()[0]
 
 
 def default() -> None:
     os.system(
         f"tar -cvf ./{get_dir_name()}.tar.gz ./{get_dir_name()}/" 
     )
+
 
 def exclude_input() -> None:
     os.system(
