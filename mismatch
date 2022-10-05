@@ -1,0 +1,20 @@
+#!/usr/bin/python3
+import re
+import os
+
+def find_straggler(): # -> list[str]
+    input_files = [
+        re.findall("(V[0-9]+\.[0-9]+_A[0-9]+)",f)[0] for f in os.listdir("./")
+        if "in." in f
+    ]
+    
+    output_files = [
+        re.findall("(V[0-9]+\.[0-9]+_A[0-9]+)",f)[0] for f in os.listdir("./")
+        if "restart.Bennu" in f
+    ]
+
+    return list( set(input_files) - set(output_files) )
+
+
+if __name__ == "__main__":
+    print(find_straggler())
